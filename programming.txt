@@ -1,0 +1,16 @@
+Variant template is in C++17
+	variant<int, string, STRUCT> var: variable var can be either an integer, string, or a struct
+	A type variant is itself an object
+	The actual value of the object is stored in the variant object
+	Must use member functions to check type and access the value (access usually comes after checking since the wrong type access will result in throw)
+	Specifically, the checker is holds_alternative<GUESSED_TYPE>(var)
+	The accessor is std::get<TYPE>(var)
+Union is a special type data in C that allows multiple different data types to be stored in one memroy location
+	Only one data type can contain information at any given time
+	Definition of a union looks like a struct (keyword 'union' instead of 'struct')
+	Memory allocated for union will be large enough to hold the largest data type defined in it
+	REMINDER: in C language, must use 'union TYPE_NAME VARIABLE_NAME' instead of 'TYPE_NAME VARIABLE_NAME', just like struct in C.
+	The latest variable being written in there will corrupt any other value that was in it
+	Likely going to need a tag to indicate the type of data the current value represents
+Type 'enum' is essentially a structure that renames some existing data structures.
+	It is itself a struct.
