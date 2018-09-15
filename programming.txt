@@ -14,3 +14,22 @@ Union is a special type data in C that allows multiple different data types to b
 	Likely going to need a tag to indicate the type of data the current value represents
 Type 'enum' is essentially a structure that renames some existing data structures.
 	It is itself a struct.
+Observation: switch statement is essentially a compiler managed control flow block using goto.
+	Each case declaration is a goto statement; no exit condition by default
+While in normal mode of Vim editor, keyboard 'u' is undo last change.
+:%s/TO_BE_REPLACED_STRING/REPLACING_STRING/gc
+	In Vim editor, search the text document for specified string pattern and replace it with given string pattern; inquire permission before operation
+/STRING
+	In Vim editor, search for the occurrence of specified string pattern
+C language does not have built-in boolean data structure
+	#include <stdbool.h>
+<stdlib.h> is the C standard library in C
+	When including library in C language, use *.h
+	stdout, stdin, stderr, \n, perror, printf
+	perror does not take formatted string, only string
+	printf takes a formatted string
+		%c (character), %d (decimal integer), %f (decimal floating point), %s (string), %e (scientific notation using e)
+<cstdlib> is the C standard library in C++
+	When including library in C++, there is no extension
+	cout, cin, cerr, endl
+<string.h> is the string library for C language
