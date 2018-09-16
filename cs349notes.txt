@@ -2,10 +2,13 @@ THE FOLLOWING PORTION IS FOR C++
 
 To use X Window library, include <X11/Xlib.h> and <X11/Xutil.h>
 	1. Moreover, g++ needs to know that the program is a X Window application: -L/opt/X11/lib and -lX11 option needs to be flagged
+	2. Seems to use C style strings thoughout
 Display class is an representation of the display (a software representation of screen space; there can be multiples display hardware, each with a screen) included in <X11/Xlib.h>, which is the main Xlib header
+	1. Essentially a representation of a X server
 XOpenDisplay(STRING)
-	1. takes a string as the name of the display (?) and returns a pointer to a Display object
-	2. return nullptr if display cannot be located
+	1. takes a string to specify a Display object and returns a pointer to it
+	2. empty string probably means default display space
+	3. return nullptr if display cannot be located
 DefaultScreen(Display *)
 	1. returns the integer index of the default screen (there can be multiple screens in the entire screen space)
 XCloseDisplay(Display *)
@@ -14,6 +17,9 @@ By convention, a struct, usually by the name of XInfo, is created to encapsulate
 	1. includes a pointer to Display object (know which display to output to)
 	2. an integer to keep track of display index
 	3. own a Window object (a software representation of the window on the screen)
+By convention, a routine called initX is created to be responsible for setting up the initial properties of XInfo
+	1. this includes all the properties of the Display and Window
+	2. Remember to flush and sleep afterwards
 XSizeHints class
 	1. since the program has no knowledge about the entire screen space, it can only define desired window attributes; windowing system cannot garuntee it will get what it wants
 	2. x field: global horizontal pixel position of left top corner of the window
@@ -21,3 +27,89 @@ XSizeHints class
 		a. 0 starts at the top of the screen
 	4. width and height field: as the name suggests
 	5. there are possible flags (which seems to be appended using bitwise operations using bit-masked flags)
+Soem information on colour:
+	1. From a physics perspective, there is an infinite dimension of colours.
+	2. Human can only see a set of that colour.
+	3. Digitally, colour needs some binary mathematical representation. This is known as the colour model.
+	4. A colour model can represent an arbitrary set of colours. Thus, there needs to be a mapping from a colour model to a colour space.
+		a. For example, RGB, HSV, HSL
+	5. The definition of mapping from colour model to colour space is specified in a ICC profile.
+	6. CIEXYZ is the colour space designed to capture colour human eyes can see.
+	7. There are two approach to mapping: absolute and relative
+		a. Absolute is independent of display device.
+			i. ICC profile is specified by software (application or OS).
+			ii. If the same scheme is used, the same colour is represented by the same mathematical expression
+			iii. for example, sRGB, Adobe RGB
+			iv. likely need a colour conversion before shown on display (colour correction?).
+		b. Relative is dependent on display device.
+			i. ICC profile is stored in hardware.
+			ii. The same colour can be represented with different mathematical expression across different devices
+			ii. Each device has its own colour space.
+XWhitePixel(Display *, int)/ XBlackPixel(Display *, int)/ WhitePixel()/ BlackPixel(...)
+	1. Reutrn an unsigned long that indicates the pixel value of white/black on the colourmap(depending on the ICC?) of screen number specified by int on the display space
+	2. X protocol for colour is using RGB colour model.
+DefaultRootWindow(Display *)
+	1. Returns the default root window of a given display.
+	2. Seems like windows are managed in a tree-like structure: THINK ABOUT WHY
+		a. What condition makes one window a parent of another?
+Window class
+	1. A X Window class to present a window.
+	2. Likely it is simply an ID
+XCreateSimpleWindow(...)
+	1. returns a Window ID
+	2. takes a pointer to display, root Window ID of a display, x pos, y pos, width, height, width of window's border in int, window border colour, and window background colour.
+XSetStandardProperties(...)
+	1. takes a pointer to display, a window ID in that display, window title string, icon title string, pixel map for the icon, argv, argc, and a pointer to a XSizeHints object
+	2. Sets the window title, icon title, icon image (taken as a pixel map), and XSizeHints properties(not sure about this one?)
+	3. not sure what it does about command line arguments
+XMapRaised(Display *, Window)
+	1. outputs the specified Window ID onto the given display
+	2. called once all desired properties are set
+XFlush(Display *)
+	1. flushes the output buffer of the given display
+		a. output buffer is an are where Xlib store pending requests(to draw or manage UI) to the X Server(where it is actually displayed)
+	2. Some events in Xlib automatically flush buffer; while some other functions flush buffer if it is going to block
+XColor struct
+	1. data structure to encapsulate colour in X windowing system
+	2. unsigned long pixel, unsigned short red, unsigned short green, unsigned short blue, char flags (possibly uses bit mask), char pad
+usleep(integer)
+	1. puts X client to sleep for however long microseconds indicated by the integer
+	2. would be used to make sure X server has time to recieve and execute previous requests
+	3. can instead use sleep(int); units in seconds
+	4. this is supported by OS
+	5. need to include <unistd.h>
+XCreateGC(Display *, Window, unsigned long, XGCValues)
+	1. Given a display and window, creates a GC, initialized by bit-masked XGCValues using the unsigned long, that can be used for any window that shares the same root window and same depth in the window tree
+XSetForeground(Display *, GC, unsigned long)/ XSetBackground(Display *, GC, unsigned long)
+	1. sets the foreground colour and background colour of a given GC in a display class
+	2. not entirely sure what foreground and background means in a GC context
+XFontStruct class: encapsulates font attributes in X Window
+	1. used as a pointer
+XLoadQueryFont(Display *, char *)
+	1. returns a XFontStruct pointer specified by the string of characters
+	2. X server loads and caches the font whenever X client queries it
+	3. XFontStruct are global across all screens of the same X server
+XSetFont(Display *, GC, Font)
+	1. Given a display, set the GC to use XFontStruct with the given Font ID
+XDrawImageString(Display *, Window, GC, int x, int y, char *, int)
+	1. Given a display and window to draw to (along with a GC to use), draw the string(must be in C style) of length specified by the last integer at the local coordinate x,y.
+	2. y coordinate is the bottom of the image string (so x,y is the bottom left corner instead of the upper left)
+	3. When coding in C++, use STRING.c_str() and STRING.length()
+XSetFillStyle(Display *, GC, int)
+	1. sets the fill style of GC in display through int flag
+	2. see pg115 of xlib77.pdf
+XSetLineAttributes(Display *, GC, int width, int style, int cap, int join)
+	1. sets the fill style of GC in display by integer for width and integer flag for line style, cap, and join.
+	2, see pg115 of xlib77.pdf
+XDrawLine, XFillRectangle, XDrawRectangle, XDrawArc (can be used for circles)
+	1. pass in a display pointer, window, and GC for all such drawing operations
+	2. will have to specify location and geometric attributes depending on the object
+	3. Most object's origin seems to be the left top corner
+	4. Most draw function has a 'draw multiple' version: array for primitives are passed in and one draw call will take care of all
+XWindowAttributes class
+	1. class to encapsulates attributes of a window
+XGetWindowAttributes(Display *, Window, XWindowAttributes *)
+	1. since initialization of windows do not have garuntee values, one can query for the actual attributes of a window after it is initialized.
+	2. Given a window in a display, values in the XWindowAttributes pointer will be updated
+Top left corner seems to be 0,0 with bottom right corner being WIDTH,HEIGHT
+
