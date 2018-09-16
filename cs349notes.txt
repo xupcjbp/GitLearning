@@ -1,0 +1,3 @@
+To use X Window library, include <X11/Xlib.h> and <X11/Xutil.h>
+	Moreover, g++ needs to know that the program is a X Window application: -L/opt/X11/lib and -lX11 option needs to be flagged
+
