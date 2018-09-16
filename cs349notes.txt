@@ -3,7 +3,7 @@ THE FOLLOWING PORTION IS FOR C++
 To use X Window library, include <X11/Xlib.h> and <X11/Xutil.h>
 	1. Moreover, g++ needs to know that the program is a X Window application: -L/opt/X11/lib and -lX11 option needs to be flagged
 	2. Seems to use C style strings thoughout
-Display class is an representation of the display (a software representation of screen space; there can be multiples display hardware, each with a screen) included in <X11/Xlib.h>, which is the main Xlib header
+Display object is an representation of the display (a software representation of screen space; there can be multiples display hardware, each with a screen) included in <X11/Xlib.h>, which is the main Xlib header
 	1. Essentially a representation of a X server
 XOpenDisplay(STRING)
 	1. takes a string to specify a Display object and returns a pointer to it
@@ -20,7 +20,7 @@ By convention, a struct, usually by the name of XInfo, is created to encapsulate
 By convention, a routine called initX is created to be responsible for setting up the initial properties of XInfo
 	1. this includes all the properties of the Display and Window
 	2. Remember to flush and sleep afterwards
-XSizeHints class
+XSizeHints object
 	1. since the program has no knowledge about the entire screen space, it can only define desired window attributes; windowing system cannot garuntee it will get what it wants
 	2. x field: global horizontal pixel position of left top corner of the window
 	3. y field: global vertical pixel position of the left top corner of the window
@@ -52,8 +52,8 @@ DefaultRootWindow(Display *)
 	1. Returns the default root window of a given display.
 	2. Seems like windows are managed in a tree-like structure: THINK ABOUT WHY
 		a. What condition makes one window a parent of another?
-Window class
-	1. A X Window class to present a window.
+Window object
+	1. A X Window object to present a window.
 	2. Likely it is simply an ID
 XCreateSimpleWindow(...)
 	1. returns a Window ID
@@ -81,9 +81,9 @@ usleep(integer)
 XCreateGC(Display *, Window, unsigned long, XGCValues)
 	1. Given a display and window, creates a GC, initialized by bit-masked XGCValues using the unsigned long, that can be used for any window that shares the same root window and same depth in the window tree
 XSetForeground(Display *, GC, unsigned long)/ XSetBackground(Display *, GC, unsigned long)
-	1. sets the foreground colour and background colour of a given GC in a display class
+	1. sets the foreground colour and background colour of a given GC in a display object
 	2. not entirely sure what foreground and background means in a GC context
-XFontStruct class: encapsulates font attributes in X Window
+XFontStruct object: encapsulates font attributes in X Window
 	1. used as a pointer
 XLoadQueryFont(Display *, char *)
 	1. returns a XFontStruct pointer specified by the string of characters
@@ -106,10 +106,22 @@ XDrawLine, XFillRectangle, XDrawRectangle, XDrawArc (can be used for circles)
 	2. will have to specify location and geometric attributes depending on the object
 	3. Most object's origin seems to be the left top corner
 	4. Most draw function has a 'draw multiple' version: array for primitives are passed in and one draw call will take care of all
-XWindowAttributes class
-	1. class to encapsulates attributes of a window
+XWindowAttributes object
+	1. object to encapsulates attributes of a window
 XGetWindowAttributes(Display *, Window, XWindowAttributes *)
 	1. since initialization of windows do not have garuntee values, one can query for the actual attributes of a window after it is initialized.
 	2. Given a window in a display, values in the XWindowAttributes pointer will be updated
 Top left corner seems to be 0,0 with bottom right corner being WIDTH,HEIGHT
 
+By convention, a routine called initX is created to be responsible for setting up the initial properties
+XPoints object: has an x and y field
+Making all drawable objects into parent child relationship is an interesting way of using polymorphism
+	1. The same paint call over an array of objects will draw different things
+XRectangle object: has x, y, width, and height fields
+XSetClipRectangles(Display *, GC, int x, int y, XRectangle[], ORDERING)
+	1. overrides the current clip mask (if any existing) with a list of rectangles at x,y, origin
+	2. ORDERING will specify how the list of rectangles is to be ordered (?)
+XSetClipMask(Display *, GC, PIXMAP)
+	1. Given a display and GC, bind a pixmap to the clip mask of GC
+	2. All subsequent graphics operation using the same GC will be affected
+	3. 'None' for PIXMAP to clear mask
