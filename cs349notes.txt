@@ -1,3 +1,23 @@
-To use X Window library, include <X11/Xlib.h> and <X11/Xutil.h>
-	Moreover, g++ needs to know that the program is a X Window application: -L/opt/X11/lib and -lX11 option needs to be flagged
+THE FOLLOWING PORTION IS FOR C++
 
+To use X Window library, include <X11/Xlib.h> and <X11/Xutil.h>
+	1. Moreover, g++ needs to know that the program is a X Window application: -L/opt/X11/lib and -lX11 option needs to be flagged
+Display class is an representation of the display (a software representation of screen space; there can be multiples display hardware, each with a screen) included in <X11/Xlib.h>, which is the main Xlib header
+XOpenDisplay(STRING)
+	1. takes a string as the name of the display (?) and returns a pointer to a Display object
+	2. return nullptr if display cannot be located
+DefaultScreen(Display *)
+	1. returns the integer index of the default screen (there can be multiple screens in the entire screen space)
+XCloseDisplay(Display *)
+	1. manages and destroys a Display object, given a pointer to it
+By convention, a struct, usually by the name of XInfo, is created to encapsulate all information about a window
+	1. includes a pointer to Display object (know which display to output to)
+	2. an integer to keep track of display index
+	3. own a Window object (a software representation of the window on the screen)
+XSizeHints class
+	1. since the program has no knowledge about the entire screen space, it can only define desired window attributes; windowing system cannot garuntee it will get what it wants
+	2. x field: global horizontal pixel position of left top corner of the window
+	3. y field: global vertical pixel position of the left top corner of the window
+		a. 0 starts at the top of the screen
+	4. width and height field: as the name suggests
+	5. there are possible flags (which seems to be appended using bitwise operations using bit-masked flags)
