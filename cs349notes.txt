@@ -13,6 +13,7 @@ DefaultScreen(Display *)
 	1. returns the integer index of the default screen (there can be multiple screens in the entire screen space)
 XCloseDisplay(Display *)
 	1. manages and destroys a Display object, given a pointer to it
+	2. called before the program terminates
 By convention, a struct, usually by the name of XInfo, is created to encapsulate all information about a window
 	1. includes a pointer to Display object (know which display to output to)
 	2. an integer to keep track of display index
@@ -138,3 +139,25 @@ XSelectInput(Display *, Window, EVENTMASK)
 XNextEvent(Display *, XEvent *)
 	1. Given a display, get the next event for this X client through updating the value pointed by XEvent pointer
 	2. Used in an event loop to poll/sample next event in queue
+	3. XEvent ButtonPress
+		a. whenever the button of the mouse is held down
+	4. XEvent MotionNotify
+		a. whenever there is mouse movement
+	5. XEvent KeyPress
+		a. whenever a keyboard input comes in
+		b. may contain more than one character at the same time (hardware or software?)
+SysKey is an integer value representing the type of input into the system from hardware
+XLookupString(XKeyEvent *, char *buffer, int buffersize, SysKey *, XComposeStatus *)
+	1. only deals with ASCII characters
+	2. Given the XKeyEvent data structure, tries to read it as a string of character into buffer with size of buffersize
+	3. Updates the SysKey value of the pointer passed in
+Two important realization
+	1. Windowing system has a event queue where input device sends in captured input as events
+		a. One cannot reason exactly the order of these input event (ie. If mouse is dragged while being pressed, it is not possible to reason if there is a ButtonPress event between every MotionNotify event). Eventloop must take care of logic with acknowledgement of this
+		b. One strategy is to have the client application deal with events only when queue is not empty
+	2. Everything on the window is most likely re-drawn every frame (according to painter's algorithm). One possible strategy is use a list to hold all drawable (polyphorphism and the base class of all drawable object). The list is iterated every frame.
+	3. Even though draw operations have return, the screen only displays them if those calls are flushed out of the buffer
+XClearWindow(Display *, Window)
+	1. Takes a specified window in a given display can clears it
+XPending(Display *)
+	1. returns an integer with the number of events pendering
