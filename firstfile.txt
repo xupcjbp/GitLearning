@@ -1,3 +1,0 @@
-Hello, my name is Jeffrey.
-I am learning to use Git.
-I made a change.

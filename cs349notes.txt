@@ -62,9 +62,11 @@ XSetStandardProperties(...)
 	1. takes a pointer to display, a window ID in that display, window title string, icon title string, pixel map for the icon, argv, argc, and a pointer to a XSizeHints object
 	2. Sets the window title, icon title, icon image (taken as a pixel map), and XSizeHints properties(not sure about this one?)
 	3. not sure what it does about command line arguments
+	4. Seems to be a function to provide basic information about the program to Window Manager
 XMapRaised(Display *, Window)
 	1. outputs the specified Window ID onto the given display
 	2. called once all desired properties are set
+	3. All windows that is to be displayed must have its ancestor and itself mapped
 XFlush(Display *)
 	1. flushes the output buffer of the given display
 		a. output buffer is an are where Xlib store pending requests(to draw or manage UI) to the X Server(where it is actually displayed)
@@ -125,3 +127,14 @@ XSetClipMask(Display *, GC, PIXMAP)
 	1. Given a display and GC, bind a pixmap to the clip mask of GC
 	2. All subsequent graphics operation using the same GC will be affected
 	3. 'None' for PIXMAP to clear mask
+XEvent object
+	1. contains a type field (integer flag) that indicates the type of event, and a second union field that contains different tpyes of data depending on the tpye of the event
+	2. see pg178 of xlib77.pdf
+XSelectInput(Display *, Window, EVENTMASK)
+	1. Given a specified window in a given display, have all types of event indicated in the mask report to this window
+	2. needs the window to be in focus (?)
+		a. keypress event seems to need window focus; on the other hand, mouse motion event just needs the mouse to be in the window area
+	3. For list of event mask, see pg179 of xlib77.pdf
+XNextEvent(Display *, XEvent *)
+	1. Given a display, get the next event for this X client through updating the value pointed by XEvent pointer
+	2. Used in an event loop to poll/sample next event in queue
