@@ -1,0 +1,7 @@
+presentGraphics()
+	1. OpenGL stores drawing frames in a back buffer and copy them into window buffer using this function
+	2. like XFlush
+OpenGL library is platform dependent; thus, it is likely that there is a base windowing system that wraps around it to maintain consistent code bases
+On the other hand, OpenGL code does talk to hardware direclty (if so, it would be hardware dependent). Instead, it goes through the graphic card drivers.
+	1. some functions of OpenGL needs to be dynamically linked with functionality of graphic drivers; usually there is libraries that take care of this
+
