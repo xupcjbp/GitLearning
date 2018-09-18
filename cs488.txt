@@ -27,4 +27,8 @@ The language to talk to shaders are Shading Language
 	3. OpenGL will compile shader source code at runtime (to ensure cross platform ability) and copy them into graphics card
 Vertex Shader
 	1. takes vertices and their attributes as input; outputs the final device coordinate of the vertices and passes any texture/colour information to the fragment shader
+gl_Position is a vec4 that specifies the position of an object (point or vector) in ??? space
+	1. this variable is needed for the shader to process primitive information on it
+Output colour of the fragment shader is a user defined variable
+	1. must have output?
 
