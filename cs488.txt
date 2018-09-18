@@ -4,4 +4,27 @@ presentGraphics()
 OpenGL library is platform dependent; thus, it is likely that there is a base windowing system that wraps around it to maintain consistent code bases
 On the other hand, OpenGL code does talk to hardware direclty (if so, it would be hardware dependent). Instead, it goes through the graphic card drivers.
 	1. some functions of OpenGL needs to be dynamically linked with functionality of graphic drivers; usually there is libraries that take care of this
+Vertices are passed into the vertex shader to be processed (transformed, rotated, ...etc); then graphics card with change them into primitive shapes; then into the geometry shader to be processed (manipulate primitives to smooth out surface, for exmaple), this part might be done completely in the GPU (reduce bus transfer); then rasterizated to denote surface information; then into the fragment shader to be textured; then some post processing to blend the final output
+Vertex shader is a small piece of program on the graphics card to process individual vertices
+	1. passes information like colour and texture down the pipeline
+Information about scene is uploaded to graphics card (much faster) so that high fps rendering is available
+	1. done by creating vertex buffer objects (VBO) and binding data to it
+	2. sample: GLuint vbo;
+			   glGenBuffers( 1, &vbo );
+	3. a positive number is return as a reference to this piece of memory
+GLuint is the OpenGL's cross platform substitute for unsigned int
+glGenBuffer(...) creates a buffer
+glBindBuffer(...) sets a buffer to a type and makes it the active buffer
+	1. for example, GL_ARRAY_BUFFER for array buffer
+glBufferDate(...) uploads the data into active buffer (not a specified buffer)
+	1. have to pass in the size of the data
+	2. final parameter tells the buffer about the usage of the data; this will tell the hardware how to handle the data efficiently (for example, if the data is to be used once, store it in faster memory)
+Attributes passed to the shader can literally be anything we want (information that represents the property of things to be rendered)
+In modern OpenGL, shaders are programmable (and thus objects can have any attributes). In fact, vertex shader and fragment shader must be partly implemented before anything appears on screen
+The language to talk to shaders are Shading Language
+	1. GLSL: OpenGL Shading Language (C-style)
+	2. HLSL: High Level Shading Language by Microsoft
+	3. OpenGL will compile shader source code at runtime (to ensure cross platform ability) and copy them into graphics card
+Vertex Shader
+	1. takes vertices and their attributes as input; outputs the final device coordinate of the vertices and passes any texture/colour information to the fragment shader
 
