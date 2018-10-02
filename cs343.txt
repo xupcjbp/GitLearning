@@ -33,3 +33,28 @@ C language does not have built-in boolean data structure
 	When including library in C++, there is no extension
 	cout, cin, cerr, endl
 <string.h> is the string library for C language
+cin, cout, cerr can be polymorphed using istream and ostream classes
+	1. Have a base class pointer that can be any type of iostream (file, standard, ... etc)
+rand() in <cstdlib> operates based on a seed (can be changed using srand()) and generates a "seemingly random" sequence of numbers
+	1. This sequence of number will be the same everytime unless a different seed is used
+Compilation:
+	1. The point of having a header class is essentially like defining an interface for the code to provide readibility and maintainability
+		a. Thus, definition of the header goes in the .cpp file; moreover, compilation is always done to .cpp files
+		b. .cpp file also includes (literally copy and paste) its interface so that upon compilation, everything is present
+		c. Header files should only include declaration because it might be included in multiple other modulos
+			if a definition is present, compiler throughs errors since there is multiple definition of the thing
+	2. However, programs are usually too large to just simply split into a header and a definition file. In addition to corncerns of coupling strength, programs are split into modulos (each with an interface and definition)
+	3. The process of compilation then involves building an intermediate file (object files) and then linking them since definition of function and variables might be in another modulo
+		a. To compile manually, one would compile all modulo into object files (with -c compiler option) and then link all object files into a the final executable
+		a. when using makefile to facilitate this process, user needs to specify all desire object files from all modulo. Then with -MMD compile option, it will recursively build those object files from their own .cpp and .h files
+Given that a class A exists, is "A a;" an instance of A or just a declaration?
+	1. Guess is that "A a;" is a definition where the constructor is evoked.
+	2. In C++, a declaration is also a definition unless the following cases: extern, static, declaration of function with body, declaration of class name
+Templates cannot be split into multiple files.
+extern vs static
+	1. Now since header files should only contain declaration of objects, and global variable or object instance cannot be defined in it as the header will be included multiple times
+	2. However, if a global variable or object instance is put into .cpp files, it can only be used in the scope of that file (which is sufficient in some cases) as the compiler will not know where to find this variable if it is used in other modulos
+	3. thus, we need the linker's help to solve this problem. declare a variable or object instance "extern" in the header file (cannot initialize it) and must define (initialize) it along with type specifier in the corresponding .cpp file; doing this will allow the compiler to link this variable to apperances of it in other modulo while linking object files
+	4. another note: this type of behaviour can be achieved by using static members of a class to ensure every modulo is accessing the same piece of memory
+static member
+	1. static members do not belong to the class; thus, declaring a static member in the header is not defining it. Thus, it must be defined (along with type specifier) in the .cpp file
