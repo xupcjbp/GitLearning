@@ -31,4 +31,5 @@ gl_Position is a vec4 that specifies the position of an object (point or vector)
 	1. this variable is needed for the shader to process primitive information on it
 Output colour of the fragment shader is a user defined variable
 	1. must have output?
-
+std::vector has a member function called data(), which returns a pointer to the start of the internal C-like array that stores the data
+	1. handy function when trying to manage an array of vertices in software rather than uploading them into a vertex buffer object straight away
