@@ -33,3 +33,5 @@ Output colour of the fragment shader is a user defined variable
 	1. must have output?
 std::vector has a member function called data(), which returns a pointer to the start of the internal C-like array that stores the data
 	1. handy function when trying to manage an array of vertices in software rather than uploading them into a vertex buffer object straight away
+By making a constructor protected instead of public, the direct construction of a class can be prevented!
+	1. Only classes that inheirets the class would be able to call its constructor
